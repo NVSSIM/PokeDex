@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "pgLoloi123"
+    ports:
+      - "5432:5432"
+    volumes:
+      - db:/var/lib/postgresql/data
+  api:
+    build: .
+    volumes:
+      - .:/usr/app
+      - /usr/app/nodes_modules
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+volumes:
+  db:

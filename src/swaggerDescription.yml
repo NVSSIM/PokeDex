@@ -1,0 +1,451 @@
+openapi: 3.0.3
+info:
+  title: PokeDex
+  version: 1.0.0
+paths:
+  /authorize:
+    get:
+      tags:
+        -oAuth
+      summary: Redirect to the given uri and return authorization code
+      parameters:
+        - name: acceptedClientId
+          in: query
+          required: true
+          example: OAUTH_TEST_APP
+          schema:
+          type: string
+
+      responses:
+        '200':
+          description: Return the redirect uri with an authorization code
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  redirection:
+                    type: string
+                  authCode:
+                    type: string
+        '400':
+          description: Error with the scope requested
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject'
+
+  /token:
+    get:
+      tags:
+        -oAuth
+      summary: Redirect to the given uri and return authorization code
+      parameters:
+        - name: bearerToken
+          in: query
+          required: true
+          example: lkqjs5ee4uir6ighA&&zqz3eoeiF
+          schema:
+          type: string
+
+      responses:
+        '200':
+          description: Return the redirect uri with an authorization code
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  redirection:
+                    type: string
+                  authCode:
+                    type: string
+        '400':
+          description: Error, wrong token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorObject'
+
+  /dresseur/create:
+    post:
+      tags:
+        - dresseur
+      summary: Register as a new trainer
+      requestBody:
+        description: New trainer data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dresseur'
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdObject'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /dresseur/info/{id}:
+    get:
+      tags:
+        - dresseur
+      summary: Get info about a trainer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dresseur'
+          '500':
+            $ref: '#/components/responses/ServerError'
+          '404':
+            description: Trainer not found
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorObject'
+
+  /dresseur/prenom/{id}:
+    patch:
+      tags:
+        - dresseur
+      summary: Get info about a trainer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: interger
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                prenom:
+                  type: integer
+                  description: The firstname of the pokemon to give
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trainer'
+          '500':
+            $ref: '#/components/responses/ServerError'
+          '404':
+            description: Trainer not found
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorObject'
+
+  /dresseur/nom/{id}:
+    patch:
+      tags:
+        - dresseur
+      summary: Get info about a trainer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nom:
+                  type: string
+                  description: The name of the dresseur to give
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trainer'
+          '500':
+            $ref: '#/components/responses/ServerError'
+          '404':
+            description: Trainer not found
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorObject'
+
+  /dresseur/delete/{id}:
+    delete:
+      tags:
+        - dresseur
+      summary: Get info about a trainer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dresseur'
+          '500':
+            $ref: '#/components/responses/ServerError'
+          '404':
+            description: Trainer not found
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorObject'
+
+  /pokemon/create/{dresseurId}:
+    post:
+      tags:
+        - pokemon
+      summary: Create a pokemon with trainer id
+      requestBody:
+        description: New pokemon data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pokemon'
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdObject'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /pokemon/management/nom/{id}:
+    patch:
+      tags:
+        - pokemon
+      summary: Modify pokemon's name with id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nom:
+                  type: string
+                  description: The name of the pokemon to give
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trainer'
+          '500':
+            $ref: '#/components/responses/ServerError'
+          '404':
+            description: Pokemon not found
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorObject'
+
+  /pokemon/management/niveau/{id}:
+    patch:
+      tags:
+        - pokemon
+      summary: Modify pokemon's level with id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                level:
+                  type: integer
+                  description: The level of the pokemon to give
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trainer'
+          '500':
+            $ref: '#/components/responses/ServerError'
+          '404':
+            description: Pokemon not found
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorObject'
+
+  /pokemon/info/{id}:
+    get:
+      tags:
+        - pokemon
+      summary: Get info about a pokemon
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pokemon'
+          '500':
+            $ref: '#/components/responses/ServerError'
+          '404':
+            description: Pokemon not found
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorObject'
+
+  /pokemon/delete/{id}:
+    delete:
+      tags:
+        - Pokemon
+      summary: Delete Pokemon
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pokemon'
+          '500':
+            $ref: '#/components/responses/ServerError'
+          '404':
+            description: Pokemon not found
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorObject'
+
+components:
+  schemas:
+    IdObject:
+      type: object
+      properties:
+        id:
+          type: integer
+    ErrorObject:
+      type: object
+      properties:
+        error:
+          type: string
+    Dresseur:
+      type: object
+      properties:
+        id:
+          type: integer
+        nom:
+          type: string
+        prenom:
+          type: string
+        login:
+          type: string
+        password:
+          type: string
+        age:
+          type: integer
+        scope:
+          type: string
+        created_at:
+          type: date
+        updated_at:
+          type: date
+    Pokemon:
+      type: object
+      properties:
+        espece:
+          type: string
+        id:
+          type: integer
+        nom:
+          type: string
+        genre:
+          type: string
+          enum: [male, femelle, non defini]
+        niveau:
+          type: integer
+        taille:
+          type: integer
+        poids:
+          type: integer
+        chromatic:
+          type: boolean
+        created_at:
+          type: date
+        updated_at:
+          type: date
+
+
+  responses:
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorObject'
+    ServerError:
+      description: Server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorObject'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    oAuth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: /authorize
+          tokenUrl: /token
+          scopes:
+            User: Limited Rights
+            Admin: Root

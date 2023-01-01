@@ -1,0 +1,695 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "PokeDex",
+    "version": "1.0.0"
+  },
+  "host": "localhost:80",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "description": "Auth token for 30 minutes",
+      "in": "header",
+      "name": "Authorization"
+    }
+  },
+  "paths": {
+    "/Oauth/authorize": {
+      "get": {
+        "tags": [
+          "oAuth"
+        ],
+        "summary": "Redirect to the given uri and return authorization code",
+        "parameters": [
+          {
+            "name": "client_id",
+            "default": "OAUTH_TEST_APP",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "redirect_uri",
+            "in": "query",
+            "required": true,
+            "default": "google.com",
+            "type": "string"
+          },
+          {
+            "name": "scopes",
+            "in": "query",
+            "required": true,
+            "default": "ADMIN",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token generated",
+            "schema": {
+              "$ref": "#/definitions/Pokemon"
+            }
+          },
+          "404": {
+            "description": "A problem Occured",
+            "schema": {
+              "$ref": "#/definitions/ErrorObject"
+            }
+          },
+          "500": {
+            "schema": {
+              "$ref": "#/responses/ServerError"
+            },
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/Oauth/token": {
+      "post": {
+        "tags": [
+          "oAuth"
+        ],
+        "summary": "Redirect to the given uri and return authorization code",
+        "parameters": [
+          {
+            "name": "client_id",
+            "in": "query",
+            "default": "OAUTH_TEST_APP",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "client_secret",
+            "in": "query",
+            "required": true,
+            "default": "OAUTH_TEST_APP_SECRET",
+            "type": "string"
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "required": true,
+            "default": "OAUTH_TEST_APP_ACCEPTED",
+            "type": "string"
+          },
+          {
+            "name": "user credentials",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "login": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                },
+                "scopes": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Connected !",
+            "schema": {
+              "$ref": "#/definitions/Pokemon"
+            }
+          },
+          "404": {
+            "description": "Not Authorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorObject"
+            }
+          },
+          "500": {
+            "schema": {
+              "$ref": "#/responses/ServerError"
+            },
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/dresseur/create": {
+      "post": {
+        "tags": [
+          "dresseur"
+        ],
+        "summary": "Register as a new trainer",
+        "parameters": [
+          {
+            "name": "dresseur info",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Dresseur"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Pokemon"
+            }
+          },
+          "500": {
+            "schema": {
+              "$ref": "#/responses/ServerError"
+            },
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/dresseur/info/{id}": {
+      "get": {
+        "tags": [
+          "dresseur"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "summary": "Get info about a trainer",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Pokemon"
+            }
+          },
+          "500": {
+            "schema": {
+              "$ref": "#/responses/ServerError"
+            },
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/dresseur/update/prenom/{id}": {
+      "patch": {
+        "tags": [
+          "dresseur"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "summary": "Get info about a trainer",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+
+          },
+          {
+            "name": "prenom",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prenom": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Pokemon"
+            }
+          },
+          "404": {
+            "description": "Dresseur not found",
+            "schema": {
+              "$ref": "#/definitions/ErrorObject"
+            }
+          },
+          "500": {
+            "schema": {
+              "$ref": "#/responses/ServerError"
+            },
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/dresseur/update/nom/{id}": {
+      "patch": {
+        "tags": [
+          "dresseur"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "summary": "Get info about a trainer",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "nom",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "nom": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Pokemon"
+            }
+          },
+          "500": {
+            "schema": {
+              "$ref": "#/responses/ServerError"
+            },
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/dresseur/delete/{id}": {
+      "delete": {
+        "tags": [
+          "dresseur"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "summary": "Get info about a trainer",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Pokemon"
+            }
+          },
+          "404": {
+            "description": "Dresseur not found",
+            "schema": {
+              "$ref": "#/definitions/ErrorObject"
+            }
+          },
+          "500": {
+            "schema": {
+              "$ref": "#/responses/ServerError"
+            },
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/pokemon/create/{dresseurId}": {
+      "post": {
+        "tags": [
+          "pokemon"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "summary": "Create a pokemon with trainer id",
+        "parameters": [{
+          "name": "dresseurId",
+          "in": "path",
+          "required": true,
+          "type": "integer"
+
+        },
+          {
+            "name": "pokemon",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Pokemon"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Pokemon"
+            }
+          },
+          "404": {
+            "description": "Dresseur not found",
+            "schema": {
+              "$ref": "#/definitions/ErrorObject"
+            }
+          },
+          "500": {
+            "schema": {
+              "$ref": "#/responses/ServerError"
+            },
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/pokemon/management/nom/{id}": {
+      "patch": {
+        "tags": [
+          "pokemon"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "summary": "Modify pokemon's name with id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+
+          },
+          {
+            "name": "nom",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "nom": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Pokemon"
+            }
+          },
+          "404": {
+            "description": "Pokemon not found",
+            "schema": {
+              "$ref": "#/definitions/ErrorObject"
+            }
+          },
+          "500": {
+            "schema": {
+              "$ref": "#/responses/ServerError"
+            },
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/pokemon/management/niveau/{id}": {
+      "patch": {
+        "tags": [
+          "pokemon"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "summary": "Modify pokemon's level with id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+
+          },
+          {
+            "name": "niveau",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "niveau": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Pokemon"
+            }
+          },
+          "404": {
+            "description": "Pokemon not found",
+            "schema": {
+              "$ref": "#/definitions/ErrorObject"
+            }
+          },
+          "500": {
+            "schema": {
+              "$ref": "#/responses/ServerError"
+            },
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/pokemon/info/{id}": {
+      "get": {
+        "tags": [
+          "pokemon"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "summary": "Get info about a pokemon",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Pokemon"
+            }
+          },
+          "404": {
+            "description": "Pokemon not found",
+            "schema": {
+              "$ref": "#/definitions/ErrorObject"
+            }
+          },
+          "500": {
+            "schema": {
+              "$ref": "#/responses/ServerError"
+            },
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/pokemon/delete/{id}": {
+      "delete": {
+        "tags": [
+          "Pokemon"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "summary": "Delete Pokemon",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Pokemon"
+            }
+          },
+          "404": {
+            "description": "Pokemon not found",
+            "schema": {
+              "$ref": "#/definitions/ErrorObject"
+            }
+          },
+          "500": {
+            "schema": {
+              "$ref": "#/responses/ServerError"
+            },
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "UnauthorizedError": {
+      "schema": {
+        "$ref": "#/definitions/ErrorObject"
+      },
+      "description": "Not Authorized"
+    },
+    "ServerError": {
+      "schema": {
+        "$ref": "#/definitions/ErrorObject"
+      },
+      "description": "Not Authorized"
+    }
+  },
+  "definitions": {
+    "IdObject": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        }
+      }
+    },
+    "ErrorObject": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        }
+      }
+    },
+    "Dresseur": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "nom": {
+          "type": "string"
+        },
+        "prenom": {
+          "type": "string"
+        },
+        "login": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "age": {
+          "type": "integer"
+        },
+        "scope": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        }
+      }
+    },
+    "Pokemon": {
+      "type": "object",
+      "properties": {
+        "espece": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "nom": {
+          "type": "string"
+        },
+        "genre": {
+          "type": "string",
+          "enum": [
+            "male",
+            "femelle",
+            "non defini"
+          ]
+        },
+        "niveau": {
+          "type": "integer"
+        },
+        "taille": {
+          "type": "integer"
+        },
+        "poids": {
+          "type": "integer"
+        },
+        "chromatic": {
+          "type": "boolean"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
